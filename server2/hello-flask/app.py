@@ -10,17 +10,18 @@ def hello_world():
 
 @app.route('/init')
 def initVM():
-	p = Popen('VM creation script', shell=True, stdout=PIPE, stderr=PIPE)
+    p = Popen('VM creation script', shell=True, stdout=PIPE, stderr=PIPE)
     out, err = p.communicate()
     print out
     print err
 
 @app.route('/request2')
-     return status.HTTP_200_OK
+def request():
+    return status.HTTP_200_OK
 
 @app.route('/migrate')
 def migrate():
-	p = Popen('VBoxManage modifyvm ubuntu --teleporter on --teleporterport 6000', shell=True, stdout=PIPE, stderr=PIPE)
+    p = Popen('VBoxManage modifyvm ubuntu --teleporter on --teleporterport 6000', shell=True, stdout=PIPE, stderr=PIPE)
     out, err = p.communicate()
     print out
     print err
