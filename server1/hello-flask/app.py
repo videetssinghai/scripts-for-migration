@@ -17,7 +17,7 @@ def request():
 def migrate():
   result = check()
   if result == True:
-    p = Popen('VBoxManage controlvm ubuntu teleport --host 172.16.40.61 --port 6000', shell=True, stdout=PIPE, stderr=PIPE)
+    p = Popen('VBoxManage controlvm ubuntu teleport --host 172.16.40.65 --port 6000', shell=True, stdout=PIPE, stderr=PIPE)
     out, err = p.communicate()
     print out
     print err
