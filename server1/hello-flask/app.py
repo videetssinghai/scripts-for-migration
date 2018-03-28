@@ -18,6 +18,7 @@ def migrate():
   result = check()
   if result == True:
     create_vm = requests.get('http://172.16.40.65:5000/init')
+    print create_vm
     if create_vm == True:
       migrateVM()
     else:
@@ -41,6 +42,7 @@ def check():
   if r.status_code == 200:
     return True
   else:
+    print r
     return False
 
 def initVM():
@@ -122,7 +124,7 @@ def setUniversalTime():
     print err
 
 def createMedium():
-    medium = Popen('VBoxManage createmedium --filename /home/itlab/VirtualBox\ VMs/ubuntu2/ubuntu.vdi --diffparent VMs/ubuntu.vdi --size 8000 --format VDI', shell=True, stdout=PIPE, stderr=PIPE)
+    medium = Popen('VBoxManage createmedium --filename /home/itlab/VirtualBox\ VMs/ubuntu2/ubuntu.vdi --diffparent /home/itlab/VMs/ubuntu.vdi --size 8000 --format VDI', shell=True, stdout=PIPE, stderr=PIPE)
     out, err = medium.communicate()
     print out
     print err
