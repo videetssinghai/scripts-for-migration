@@ -10,10 +10,14 @@ def hello_world():
 
 @app.route('/init')
 def initVM():
-    p = Popen('VM creation script', shell=True, stdout=PIPE, stderr=PIPE)
-    out, err = p.communicate()
-    print out
-    print err
+    createVM()
+    setRAM()
+    setVRAM()
+    setBridgeAdaptor()
+    attachBridgeToNIC()
+    setPAE()
+    setConfigs()
+    setUniversalTime()
 
 @app.route('/request2')
 def request():
@@ -21,7 +25,37 @@ def request():
 
 @app.route('/migrate')
 def migrate():
-    p = Popen('VBoxManage modifyvm ubuntu --teleporter on --teleporterport 6000', shell=True, stdout=PIPE, stderr=PIPE)
+    result = check()
+    if result == True:
+        migrateVM()
+    else:
+        print "request to server 1 failed"
+
+@app.route('/init')
+def initMigrate():
+    initVM()
+    createMedium()
+    createIDE()
+    createSATA()
+    startTeleporter()
+    startVM()
+    setTeleporterOn()
+
+def check():
+  r = requests.get('http://172.16.40.68:5000/request1')
+  if r.status_code == 200:
+    return True
+  else:
+    return False
+
+def migrateVM():
+    p = Popen('VBoxManage controlvm ubuntu2 teleport --host 172.16.40.68 --port 6000', shell=True, stdout=PIPE, stderr=PIPE)
+    out, err = p.communicate()
+    print out
+    print err
+
+def setTeleporterOn():
+    p = Popen('VBoxManage modifyvm ubuntu2 --teleporter on --teleporterport 6000', shell=True, stdout=PIPE, stderr=PIPE)
     out, err = p.communicate()
     print out
     print err
@@ -124,7 +158,6 @@ def startVM():
     out, err = VM.communicate()
     print out
     print err
-
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
