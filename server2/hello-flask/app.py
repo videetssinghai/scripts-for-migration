@@ -28,8 +28,8 @@ def migrate():
     result = check()
     if result == True:
         create_vm = requests.get('http://172.16.40.65:5000/init')
-        if create_vm == True
-        migrateVM()
+        if create_vm == True:
+            migrateVM()
         else:
             print "VM Creation failed at server 1"
     else:
