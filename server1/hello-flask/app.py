@@ -32,7 +32,7 @@ def initMigrate():
     setTeleporterOn()  
 
 def check():
-  r = requests.get('http://172.16.40.68:5000/request2')
+  r = requests.get('http://172.16.40.65:5000/request2')
   if r.status_code == 200:
     return True
   else:
@@ -50,7 +50,7 @@ def initVM():
 
 
 def migrateVM():
-    p = Popen('VBoxManage controlvm ubuntu teleport --host 172.16.40.68 --port 6000', shell=True, stdout=PIPE, stderr=PIPE)
+    p = Popen('VBoxManage controlvm ubuntu teleport --host 172.16.40.65 --port 6000', shell=True, stdout=PIPE, stderr=PIPE)
     out, err = p.communicate()
     print out
     print err
