@@ -8,17 +8,6 @@ app = Flask(__name__)
 def hello_world():
     return 'Hello, world!\n'
 
-@app.route('/init')
-def initVM():
-    createVM()
-    setRAM()
-    setVRAM()
-    setBridgeAdaptor()
-    attachBridgeToNIC()
-    setPAE()
-    setConfigs()
-    setUniversalTime()
-
 @app.route('/request2')
 def request():
     return status.HTTP_200_OK
@@ -45,6 +34,16 @@ def initMigrate():
     startVM()
     setTeleporterOn()
     return True
+
+def initVM():
+    createVM()
+    setRAM()
+    setVRAM()
+    setBridgeAdaptor()
+    attachBridgeToNIC()
+    setPAE()
+    setConfigs()
+    setUniversalTime()
 
 def check():
   r = requests.get('http://172.16.40.68:5000/request1')
