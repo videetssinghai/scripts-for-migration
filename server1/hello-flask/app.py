@@ -5,7 +5,7 @@ import requests
 
 app = Flask(__name__)
 
-@app.route('/init')
+@app.route('/')
 def hello_world():
     return 'Hello, world!\n'
 
@@ -17,9 +17,13 @@ def request():
 def migrate():
   result = check()
   if result == True:
+    create_vm = requests.get('http://172.16.40.65:5000/init')
+    if create_vm == True
     migrateVM()
   else:
-    print "request to server 2 failed"
+    print "VM Creation failed"
+  else:
+    print "request to server 2 failed at server 2"
 
 @app.route('/init')
 def initMigrate():
@@ -29,7 +33,8 @@ def initMigrate():
     createSATA()
     startTeleporter()
     startVM()
-    setTeleporterOn()  
+    setTeleporterOn()
+    return True  
 
 def check():
   r = requests.get('http://172.16.40.65:5000/request2')

@@ -27,9 +27,13 @@ def request():
 def migrate():
     result = check()
     if result == True:
+        create_vm = requests.get('http://172.16.40.65:5000/init')
+        if create_vm == True
         migrateVM()
+        else:
+            print "VM Creation failed at server 1"
     else:
-        print "request to server 1 failed"
+        print "request to server 2 failed"
 
 @app.route('/init')
 def initMigrate():
@@ -40,6 +44,7 @@ def initMigrate():
     startTeleporter()
     startVM()
     setTeleporterOn()
+    return True
 
 def check():
   r = requests.get('http://172.16.40.68:5000/request1')
