@@ -1,3 +1,4 @@
+.
 from flask import Flask
 from subprocess import Popen, PIPE
 from flask.ext.api import status
@@ -15,16 +16,19 @@ def request():
 
 @app.route('/migrate')
 def migrate():
+	migrateVM()
+
+@app.route('/initmigrate')
+def initm():
   result = check()
   if result == True:
     create_vm = requests.get('http://172.16.40.65:5000/init')
-    print create_vm
-    if create_vm == True:
-      migrateVM()
-    else:
-      print "VM Creation failed"
+    print str("heyyy "+create_vm)
+    return "happy"
   else:
     print "request to server 2 failed at server 2"
+    return "sad"
+
 
 @app.route('/init')
 def initMigrate():

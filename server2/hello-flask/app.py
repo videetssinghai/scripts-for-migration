@@ -1,6 +1,7 @@
 from flask import Flask
 from subprocess import Popen, PIPE
 from flask.ext.api import status
+import time
 
 app = Flask(__name__)
 
@@ -12,6 +13,10 @@ def hello_world():
 def request():
     print "Request from 1 recieved"
     return "Request from 1 recieved"
+
+@app.route('/start')
+def start():
+    startVM()
 
 @app.route('/migrate')
 def migrate():
@@ -30,15 +35,15 @@ def migrate():
 def initMigrate():
     initVM()
     createMedium()
+    time.sleep(2)
     createIDE()
     createSATA()
-    startTeleporter()
-    startVM()
     setTeleporterOn()
     return "True"
 
 def initVM():
     createVM()
+    time.sleep(1)
     setRAM()
     setVRAM()
     setBridgeAdaptor()
