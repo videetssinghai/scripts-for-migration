@@ -1,10 +1,10 @@
-.
 from flask import Flask
 from subprocess import Popen, PIPE
 from flask.ext.api import status
 import requests
 
 app = Flask(__name__)
+app.debug = True
 
 @app.route('/')
 def hello_world():
@@ -17,14 +17,16 @@ def request():
 @app.route('/migrate')
 def migrate():
 	migrateVM()
+	return "Migrated"
+
 
 @app.route('/initmigrate')
 def initm():
   result = check()
   if result == True:
     create_vm = requests.get('http://172.16.40.65:5000/init')
-    print str("heyyy "+create_vm)
-    return "happy"
+    # print str("heyyy "+create_vm.data)
+    return create_vm.text
   else:
     print "request to server 2 failed at server 2"
     return "sad"
@@ -61,7 +63,7 @@ def initVM():
 
 
 def migrateVM():
-    p = Popen('VBoxManage controlvm ubuntu teleport --host 172.16.40.65 --port 6000', shell=True, stdout=PIPE, stderr=PIPE)
+    p = Popen('VBoxManage controlvm videet teleport --host 172.16.40.65 --port 6000', shell=True, stdout=PIPE, stderr=PIPE)
     out, err = p.communicate()
     print out
     print err

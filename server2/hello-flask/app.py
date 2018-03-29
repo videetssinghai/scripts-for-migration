@@ -4,6 +4,7 @@ from flask.ext.api import status
 import time
 
 app = Flask(__name__)
+app.debug = True
 
 @app.route('/')
 def hello_world():
@@ -127,7 +128,7 @@ def setUniversalTime():
     print err
 
 def createMedium():
-    medium = Popen('VBoxManage createmedium --filename /home/itlab/VirtualBox\ VMs/ubuntu2/ubuntu.vdi --diffparent /home/itlab/VMs/ubuntu.vdi --size 8000 --format VDI', shell=True, stdout=PIPE, stderr=PIPE)
+    medium = Popen('VBoxManage createmedium --filename /home/itlab/VirtualBox\ VMs/ubuntu2/videet.vdi --diffparent /home/itlab/VMs/videet.vdi --size 8000 --format VDI', shell=True, stdout=PIPE, stderr=PIPE)
     out, err = medium.communicate()
     print out
     print err
@@ -153,7 +154,7 @@ def createSATA():
     print err
 
     #attach the storage controller (SATA)
-    SATA = Popen('VBoxManage storageattach ubuntu2 --storagectl "SATA" --port 0 --type hdd --medium /home/itlab/VMs/ubuntu.vdi', shell=True, stdout=PIPE, stderr=PIPE)
+    SATA = Popen('VBoxManage storageattach ubuntu2 --storagectl "SATA" --port 0 --type hdd --medium /home/itlab/VMs/videet.vdi', shell=True, stdout=PIPE, stderr=PIPE)
     out, err = SATA.communicate()
     print out
     print err
