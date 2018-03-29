@@ -10,7 +10,8 @@ def hello_world():
 
 @app.route('/request2')
 def request():
-    return status.HTTP_200_OK
+    print "Request from 1 recieved"
+    return "Request from 1 recieved"
 
 @app.route('/migrate')
 def migrate():
@@ -23,6 +24,7 @@ def migrate():
             print "VM Creation failed at server 1"
     else:
         print "request to server 2 failed"
+    return "True"
 
 @app.route('/init')
 def initMigrate():
@@ -33,7 +35,7 @@ def initMigrate():
     startTeleporter()
     startVM()
     setTeleporterOn()
-    return True
+    return "True"
 
 def initVM():
     createVM()
