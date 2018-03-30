@@ -18,6 +18,7 @@ def request():
 @app.route('/start')
 def start():
     startVM()
+    return "VM Started"
 
 @app.route('/migrate')
 def migrate():

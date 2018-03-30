@@ -10,9 +10,10 @@ app.debug = True
 def hello_world():
     return 'Hello, world!\n'
 
-@app.route('/request1')
+@app.route('/request')
 def request():
-  return status.HTTP_200_OK
+	print "Request from 2 recieved"
+	return "Request from 2 recieved"
 
 @app.route('/migrate')
 def migrate():
@@ -29,7 +30,7 @@ def initm():
     return create_vm.text
   else:
     print "request to server 2 failed at server 2"
-    return "sad"
+    return "request to server 2 failed at server 2"
 
 
 @app.route('/init')
