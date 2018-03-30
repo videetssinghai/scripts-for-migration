@@ -22,10 +22,15 @@ def start():
 
 @app.route('/migrate')
 def migrate():
-    result = check()
-    if result == True:
-        create_vm = requests.get('http://172.16.40.65:5000/init')
-        return create_vm.text
+    migrateVM()
+    return "Migrated"
+
+@app.route('/initmigrate')
+def initm():
+  result = check()
+  if result == True:
+    create_vm = requests.get('http://172.16.40.68:5000/init')
+    return create_vm.text
   else:
     print "request to server 1"
     return "request to server 1"
