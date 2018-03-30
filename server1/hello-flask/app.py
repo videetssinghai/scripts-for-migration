@@ -63,10 +63,10 @@ def check():
 
 def migrateVM():
 	print "VM Migrating..."
-    p = Popen('VBoxManage controlvm videet teleport --host 172.16.40.65 --port 6000', shell=True, stdout=PIPE, stderr=PIPE)
-    out, err = p.communicate()
-    print out
-    print err
+	p = Popen('VBoxManage controlvm videet teleport --host 172.16.40.65 --port 6000', shell=True, stdout=PIPE, stderr=PIPE)
+	out, err = p.communicate()
+	print out
+	print err
 
 def setTeleporterOn():
     p = Popen('VBoxManage modifyvm ubuntu --teleporter on --teleporterport 6000', shell=True, stdout=PIPE, stderr=PIPE)
