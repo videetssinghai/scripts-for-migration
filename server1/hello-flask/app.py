@@ -37,30 +37,31 @@ def initm():
 def initMigrate():
     initVM()
     createMedium()
+    time.sleep(2)
     createIDE()
     createSATA()
-    startTeleporter()
-    startVM()
     setTeleporterOn()
-    return True  
-
-def check():
-  r = requests.get('http://172.16.40.65:5000/request2')
-  if r.status_code == 200:
-    return True
-  else:
-    print r
-    return False
+    return "VM initialized"
 
 def initVM():
     createVM()
+    time.sleep(1)
     setRAM()
     setVRAM()
     setBridgeAdaptor()
     attachBridgeToNIC()
     setPAE()
     setConfigs()
-    setUniversalTime()
+    setUniversalTime()  
+
+def check():
+  r = requests.get('http://172.16.40.65:5000/request')
+  if r.status_code == 200:
+    return True
+  else:
+    print r
+    return False
+
 
 
 def migrateVM():
