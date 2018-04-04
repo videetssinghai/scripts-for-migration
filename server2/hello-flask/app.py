@@ -42,7 +42,7 @@ def initMigrate():
     createIDE()
     createSATA()
     setTeleporterOn()
-    return "VM initialized"
+    return "VM setup completed"
 
 def initVM():
     createVM()

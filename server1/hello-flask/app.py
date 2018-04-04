@@ -3,13 +3,37 @@ from subprocess import Popen, PIPE
 from flask.ext.api import status
 import requests
 import time
+from flask import request
+from random import randint 
 
 app = Flask(__name__)
 app.debug = True
 
 @app.route('/')
 def hello_world():
-    return 'Hello, world!\n'
+	# client_ip = request.environ['REMOTE_ADDR']
+	# print client_ip
+	threshold = 50
+	print "threshold rtt: "+ str(threshold)
+	rtt1 = 10
+	print "rtt1: "+str(rtt1)
+	while (rtt1<threshold):
+		time.sleep(4)
+		rtt1+=15
+		print "rtt1: "+ str(rtt1)
+	print "rtt1 << threshold rtt\nchecking rtt for cloudlet 2..."
+	rtt2 = 100
+	print "rtt2: "+ str(rtt2)
+	while (rtt2>rtt1):
+		rtt1+=15
+		rtt2-=10
+		print "rtt1: "+ str(rtt1)
+		print "rtt2: "+ str(rtt2)
+		time.sleep(4)
+	print "rtt2 << rtt1"
+	print "Starting Migration to Cloudlet 2...\n\n"
+	initm()
+	return 'Hello, world!\n'
 
 @app.route('/request')
 def request():
@@ -21,17 +45,20 @@ def migrate():
 	migrateVM()
 	return "Migrated"
 
-
 @app.route('/initmigrate')
 def initm():
   result = check()
   if result == True:
     create_vm = requests.get('http://172.16.40.65:5000/init')
-    return create_vm.text
+    print create_vm.text
+    print "Starting VM at Cloudlet 2...."
+    start_vm = requests.get('http://172.16.40.65:5000/start')
+    print start_vm
+    migrate()
+    return start_vm.text
   else:
     print "request to server 2 failed at server 2"
     return "request to server 2 failed at server 2"
-
 
 @app.route('/init')
 def initMigrate():
@@ -54,17 +81,21 @@ def initVM():
     setUniversalTime()  
 
 def check():
-  r = requests.get('http://172.16.40.65:5000/request')
-  if r.status_code == 200:
-    return True
-  else:
-    print r
-    return False
+	r = requests.get('http://172.16.40.65:5000/request')
+	if r.status_code == 200:
+		return True
+	else:
+		return False
 
 def migrateVM():
 	print "VM Migrating..."
+	start_time = time.time()
 	p = Popen('VBoxManage controlvm videet teleport --host 172.16.40.65 --port 6000', shell=True, stdout=PIPE, stderr=PIPE)
 	out, err = p.communicate()
+	end_time = time.time()
+	print start_time
+	print end_time
+	print end_time - start_time
 	print out
 	print err
 
