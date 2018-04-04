@@ -18,7 +18,7 @@ def hello_world():
 	rtt1 = 10
 	print "rtt1: "+str(rtt1)
 	while (rtt1<threshold):
-		time.sleep(4)
+		#time.sleep(4)
 		rtt1+=15
 		print "rtt1: "+ str(rtt1)
 	print "rtt1 << threshold rtt\nchecking rtt for cloudlet 2..."
@@ -29,7 +29,7 @@ def hello_world():
 		rtt2-=10
 		print "rtt1: "+ str(rtt1)
 		print "rtt2: "+ str(rtt2)
-		time.sleep(4)
+		#time.sleep(4)
 	print "rtt2 << rtt1"
 	print "Starting Migration to Cloudlet 2...\n\n"
 	initm()
@@ -53,7 +53,8 @@ def initm():
     print create_vm.text
     print "Starting VM at Cloudlet 2...."
     start_vm = requests.get('http://172.16.40.65:5000/start')
-    print start_vm
+    print start_vm.text
+    time.sleep(4)
     migrate()
     return start_vm.text
   else:

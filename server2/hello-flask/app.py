@@ -39,6 +39,7 @@ def initm():
 def initMigrate():
     initVM()
     createMedium()
+    time.sleep(1)
     createIDE()
     createSATA()
     setTeleporterOn()
