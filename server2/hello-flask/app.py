@@ -21,14 +21,16 @@ storage = '8000'
 msg_request_failed = "Request to " + str(target_host) + " failed"
 msg_start_migrate = "Starting Migration to Cloudlet " + str(target_host) + "...\n\n"
 msg_migrated = "VM Migrated Successfully!!!!"
-msg_vm_start = "Virtual Machine " + str(vm_name)
-msg_vm_setup = " Virtual Machine " + str(vm_name) + " setup completed"
+msg_vm_start = "Virtual Machine " + str(vm_name) + " at "+ target_host+" started"
+msg_vm_starting = "Virtual Machine " + str(vm_name) + " at "+ target_host + "starting..."
+msg_vm_setup = " Virtual Machine " + str(vm_name) + " at "+ target_host + " setup completed"
 
 
 @app.route('/')
 def hello_world():
     # client_ip = request.environ['REMOTE_ADDR']
     # print client_ip
+    # rtt working is simulated
     threshold = 50
     print "threshold rtt: "+ str(threshold)
     rtt1 = 10
@@ -61,7 +63,7 @@ def request():
 @app.route('/start')
 def start():
     startVM()
-    return "VM Started"
+    return msg_vm_start
 
 @app.route('/migrate')
 def migrate():
@@ -74,7 +76,7 @@ def initm():
   if result == True:
     create_vm = requests.get(getURL('init'))
     print create_vm.text
-    print "Starting VM at Cloudlet 2...."
+    print msg_vm_starting
     start_vm = requests.get(getURL('start'))
     print start_vm.text
     time.sleep(4)
@@ -116,10 +118,16 @@ def getURL(route):
 
 def migrateVM():
     print "VM Migrating..."
+    start_time = time.time()
     p = Popen('VBoxManage controlvm ' + vm_name ' teleport --host' + target_host + ' --port 6000', shell=True, stdout=PIPE, stderr=PIPE)
     out, err = p.communicate()
+    end_time = time.time()    
+    print start_time
+    print end_time
+    print end_time - start_time
     print out
     print err
+
 
 def setTeleporterOn():
     p = Popen('VBoxManage modifyvm ' + vm_name ' --teleporter on --teleporterport 6000', shell=True, stdout=PIPE, stderr=PIPE)
