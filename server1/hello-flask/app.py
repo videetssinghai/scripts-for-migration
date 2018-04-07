@@ -4,7 +4,7 @@ from flask.ext.api import status
 import requests
 import time
 from flask import request
-from random import randint 
+ 
 
 app = Flask(__name__)
 app.debug = True
@@ -35,6 +35,9 @@ def hello_world():
 	initm()
 	return 'Hello, world!\n'
 
+def getURL(route):
+	return 'http://' + target_host + ':5000/' + route
+
 @app.route('/request')
 def request():
 	print "Request from 2 recieved"
@@ -49,10 +52,10 @@ def migrate():
 def initm():
   result = check()
   if result == True:
-    create_vm = requests.get('http://172.16.40.65:5000/init')
+    create_vm = requests.get(getURL('init'))
     print create_vm.text
     print "Starting VM at Cloudlet 2...."
-    start_vm = requests.get('http://172.16.40.65:5000/start')
+    start_vm = requests.get(getURL('start'))
     print start_vm.text
     time.sleep(4)
     migrate()

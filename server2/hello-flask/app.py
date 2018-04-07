@@ -1,7 +1,9 @@
 from flask import Flask
 from subprocess import Popen, PIPE
 from flask.ext.api import status
+import requests
 import time
+from flask import request
 
 app = Flask(__name__)
 app.debug = True
@@ -16,15 +18,45 @@ shared_path = '/home/itlab/VMs/' +vdi_name
 target_host = '172.16.40.68'
 storage = '8000'
 
+msg_request_failed = "Request to " + str(target_host) + " failed"
+msg_start_migrate = "Starting Migration to Cloudlet " + str(target_host) + "...\n\n"
+msg_migrated = "VM Migrated Successfully!!!!"
+msg_vm_start = "Virtual Machine " + str(vm_name)
+msg_vm_setup = " Virtual Machine " + str(vm_name) + " setup completed"
+
 
 @app.route('/')
 def hello_world():
+    # client_ip = request.environ['REMOTE_ADDR']
+    # print client_ip
+    threshold = 50
+    print "threshold rtt: "+ str(threshold)
+    rtt1 = 10
+    print "rtt1: "+str(rtt1)
+    while (rtt1<threshold):
+        #time.sleep(4)
+        rtt1+=15
+        print "rtt1: "+ str(rtt1)
+    print "rtt1 << threshold rtt\nchecking rtt for cloudlet 2..."
+    rtt2 = 100
+    print "rtt2: "+ str(rtt2)
+    while (rtt2>rtt1):
+        rtt1+=15
+        rtt2-=10
+        print "rtt1: "+ str(rtt1)
+        print "rtt2: "+ str(rtt2)
+        #time.sleep(4)
+    print "rtt2 << rtt1"
+    print msg_start_migrate
+    initm()
     return 'Hello, world!\n'
 
 @app.route('/request')
 def request():
-    print "Request from 1 recieved"
-    return "Request from 1 recieved"
+    client_ip = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
+    msg_request_recieved = "Request from " + client_ip +" recieved"
+    print msg_request_recieved
+    return msg_request_recieved
 
 @app.route('/start')
 def start():
@@ -34,17 +66,23 @@ def start():
 @app.route('/migrate')
 def migrate():
     migrateVM()
-    return "Migrated"
+    return msg_migrated
 
 @app.route('/initmigrate')
 def initm():
   result = check()
   if result == True:
-    create_vm = requests.get('http://' + target_host + ':5000/init')
-    return create_vm.text
+    create_vm = requests.get(getURL('init'))
+    print create_vm.text
+    print "Starting VM at Cloudlet 2...."
+    start_vm = requests.get(getURL('start'))
+    print start_vm.text
+    time.sleep(4)
+    migrate()
+    return start_vm.text
   else:
-    print "request to server 1"
-    return "request to server 1"
+    print msg_request_failed
+    return msg_request_failed
 
 @app.route('/init')
 def initMigrate():
@@ -54,7 +92,7 @@ def initMigrate():
     createIDE()
     createSATA()
     setTeleporterOn()
-    return "VM setup completed"
+    return msg_vm_setup
 
 def initVM():
     createVM()
@@ -67,11 +105,14 @@ def initVM():
     setUniversalTime()
 
 def check():
-  r = requests.get('http://172.16.40.68:5000/request')
+  r = requests.get(getURL('request'))
   if r.status_code == 200:
     return True
   else:
     return False
+
+def getURL(route):
+    return 'http://' + target_host + ':5000/' + route
 
 def migrateVM():
     print "VM Migrating..."
