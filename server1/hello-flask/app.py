@@ -91,7 +91,7 @@ def check():
 def migrateVM():
 	print "VM Migrating..."
 	start_time = time.time()
-	p = Popen('VBoxManage controlvm videet teleport --host 172.16.40.65 --port 6000', shell=True, stdout=PIPE, stderr=PIPE)
+	p = Popen('VBoxManage controlvm videet_25_1 teleport --host 172.16.40.65 --port 6000', shell=True, stdout=PIPE, stderr=PIPE)
 	out, err = p.communicate()
 	end_time = time.time()
 	print start_time
