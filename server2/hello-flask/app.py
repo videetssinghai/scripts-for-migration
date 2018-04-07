@@ -10,11 +10,12 @@ app.debug = True
 
 vm_name = 'ubuntu2'
 ram = '1024'
-cpus = '5'
-cpu_cap = '25'
-vdi_name = 'videet_25_1.vdi'
+cpu = '5'
+cpu_cap = '100'
+v_name = 'videet_25_1'
+vdi_name = v_name + '.vdi'
 vdi_path = '/home/itlab/VirtualBox\ VMs/' +vm_name + '/' + vdi_name
-shared_path = '/home/itlab/VMs/' +vdi_name
+shared_path = '/home/itlab/VMs/'+ v_name + '/' + vdi_name
 target_host = '172.16.40.68'
 storage = '8000'
 
@@ -22,8 +23,8 @@ msg_request_failed = "Request to " + str(target_host) + " failed"
 msg_start_migrate = "Starting Migration to Cloudlet " + str(target_host) + "...\n\n"
 msg_migrated = "VM Migrated Successfully!!!!"
 msg_vm_start = "Virtual Machine " + str(vm_name) + " at "+ target_host+" started"
-msg_vm_starting = "Virtual Machine " + str(vm_name) + " at "+ target_host + "starting..."
-msg_vm_setup = " Virtual Machine " + str(vm_name) + " at "+ target_host + " setup completed"
+msg_vm_starting = "Virtual Machine " + str(vm_name) + " at "+ target_host + " starting..."
+msg_vm_setup = "Virtual Machine " + str(vm_name) + " at "+ target_host + " setup completed"
 
 
 @app.route('/')
@@ -99,6 +100,8 @@ def initMigrate():
 def initVM():
     createVM()
     setRAM()
+    setCpu()
+    setCap()
     setVRAM()
     setBridgeAdaptor()
     attachBridgeToNIC()
@@ -119,7 +122,7 @@ def getURL(route):
 def migrateVM():
     print "VM Migrating..."
     start_time = time.time()
-    p = Popen('VBoxManage controlvm ' + vm_name ' teleport --host' + target_host + ' --port 6000', shell=True, stdout=PIPE, stderr=PIPE)
+    p = Popen('VBoxManage controlvm ' + vm_name + ' teleport --host ' + target_host + ' --port 6000', shell=True, stdout=PIPE, stderr=PIPE)
     out, err = p.communicate()
     end_time = time.time()    
     print start_time
@@ -130,7 +133,7 @@ def migrateVM():
 
 
 def setTeleporterOn():
-    p = Popen('VBoxManage modifyvm ' + vm_name ' --teleporter on --teleporterport 6000', shell=True, stdout=PIPE, stderr=PIPE)
+    p = Popen('VBoxManage modifyvm ' + vm_name + ' --teleporter on --teleporterport 6000', shell=True, stdout=PIPE, stderr=PIPE)
     out, err = p.communicate()
 
 def createVM():
@@ -140,11 +143,11 @@ def createVM():
     print err
 
 def setCpu():
-    ref_cpu = Popen('VBoxManage modifyvm ' + vm_name + ' --cpu ' + cpu, shell=True, stdout=PIPE, stderr=PIPE)
+    ref_cpu = Popen('VBoxManage modifyvm ' + vm_name + ' --cpus ' + cpu, shell=True, stdout=PIPE, stderr=PIPE)
     out, err = ref_cpu.communicate()
 
 def setCap():
-    ref_cap = Popen('VBoxManage modifyvm ' + vm_name + ' --cpu ' + cpu_cap, shell=True, stdout=PIPE, stderr=PIPE)
+    ref_cap = Popen('VBoxManage modifyvm ' + vm_name + ' --cpuexecutioncap ' + cpu_cap, shell=True, stdout=PIPE, stderr=PIPE)
     out, err = ref_cap.communicate()
 
 def setRAM():
@@ -221,7 +224,7 @@ def startTeleporter():
 
 
 def startVM():
-    VM = Popen('VBoxManage startvm' + vm_name, shell=True, stdout=None, stderr=None)
+    VM = Popen('VBoxManage startvm ' + vm_name, shell=True, stdout=None, stderr=None)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
