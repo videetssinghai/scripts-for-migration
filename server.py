@@ -5,6 +5,10 @@ import time
 from flask import request
 import config
 import mysql_config
+import MySQLdb
+from multiping import MultiPing
+from multiping import multi_ping
+
 
 app = Flask(__name__)
 app.debug = True
@@ -13,8 +17,10 @@ app.debug = True
 def hello_world():
     # rtt working is simulated
     #code to update cloud to cloud rtt. run ever 120s.
-    
+
     client_ip = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
+    connection=MySQLdb.connect(host="localhost", user=username, passwd=password, db=db_name)
+    cur=connection.cursor()
     cur.execute("select IPaddress from neighbour_cloudlets")
     rows=cur.fetchall()
 
@@ -61,12 +67,6 @@ def req():
 @app.route('/setIP')
 def setIP():
     print "mobile ip: " + str(request.data)
-    dir = []
-    dir.append(request.data)
-    mp = MultiPing(dir)
-    mp.send()
-    responses, no_responses = mp.receive(0.01)
-    addr, rtt = responses.items()
     return rtt
 
 def getCustomURL(IPaddress):

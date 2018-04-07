@@ -4,6 +4,9 @@ username = 'cloudlet3'
 password = 'bekvs2018' 
 db_name = 'cloudlet_info'
 
+#rtt
+rtt = '0.1'
+
 #vm config
 vm_name = 'ubuntu2'
 ram = '512'
@@ -13,7 +16,7 @@ v_name = 'ubuntu_50_500'
 vdi_name = v_name + '.vdi'
 vdi_path = '/home/itlab/VirtualBox\ VMs/' +vm_name + '/' + vdi_name
 shared_path = '/home/itlab/VMs/'+ v_name + '/' + vdi_name
-target_host = '172.16.40.68'
+target_host = '172.16.40.65'
 storage = '8000'
 
 #status messages
