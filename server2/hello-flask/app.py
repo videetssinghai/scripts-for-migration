@@ -14,6 +14,7 @@ vdi_name = 'videet_25_1.vdi'
 vdi_path = '/home/itlab/VirtualBox\ VMs/' +vm_name + '/' + vdi_name
 shared_path = '/home/itlab/VMs/' +vdi_name
 target_host = '172.16.40.68'
+storage = '8000'
 
 
 @app.route('/')
@@ -39,7 +40,7 @@ def migrate():
 def initm():
   result = check()
   if result == True:
-    create_vm = requests.get('http://172.16.40.68:5000/init')
+    create_vm = requests.get('http://' + target_host + ':5000/init')
     return create_vm.text
   else:
     print "request to server 1"
@@ -84,14 +85,22 @@ def setTeleporterOn():
     out, err = p.communicate()
 
 def createVM():
-     new_vm = Popen('VBoxManage createvm --name ' + vm_name + ' --ostype Ubuntu_64 --register', shell=True, stdout=PIPE, stderr=PIPE)
-     out, err = new_vm.communicate()
-     print out
-     print err
+    new_vm = Popen('VBoxManage createvm --name ' + vm_name + ' --ostype Ubuntu_64 --register', shell=True, stdout=PIPE, stderr=PIPE)
+    out, err = new_vm.communicate()
+    print out
+    print err
+
+def setCpu():
+    ref_cpu = Popen('VBoxManage modifyvm ' + vm_name + ' --cpu ' + cpu, shell=True, stdout=PIPE, stderr=PIPE)
+    out, err = ref_cpu.communicate()
+
+def setCap():
+    ref_cap = Popen('VBoxManage modifyvm ' + vm_name + ' --cpu ' + cpu_cap, shell=True, stdout=PIPE, stderr=PIPE)
+    out, err = ref_cap.communicate()
 
 def setRAM():
-    ram = Popen('VBoxManage modifyvm ' + vm_name + ' --memory 2048', shell=True, stdout=PIPE, stderr=PIPE)
-    out, err = ram.communicate()
+    ref_ram = Popen('VBoxManage modifyvm ' + vm_name + ' --memory ' + ram, shell=True, stdout=PIPE, stderr=PIPE)
+    out, err = ref_ram.communicate()
 
 def setVRAM():
     vram = Popen('VBoxManage modifyvm ' + vm_name + ' --vram 16', shell=True, stdout=PIPE, stderr=PIPE)
@@ -130,8 +139,7 @@ def setUniversalTime():
 
 
 def createMedium():
-    medium = Popen('VBoxManage createmedium --filename ' + vdi_path +
-     '--diffparent ' + shared_path + ' --size 8000 --format VDI', shell=True, stdout=PIPE, stderr=PIPE)
+    medium = Popen('VBoxManage createmedium --filename ' + vdi_path + '--diffparent ' + shared_path + ' --size ' + storage + ' --format VDI', shell=True, stdout=PIPE, stderr=PIPE)
     out, err = medium.communicate()
     print out
     print err
