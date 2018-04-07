@@ -1,3 +1,10 @@
+
+#mysql config
+username = 'cloudlet3'
+password = 'bekvs2018' 
+db_name = 'cloudlet_info'
+
+#vm config
 vm_name = 'ubuntu2'
 ram = '512'
 cpu = '5'
@@ -9,6 +16,7 @@ shared_path = '/home/itlab/VMs/'+ v_name + '/' + vdi_name
 target_host = '172.16.40.68'
 storage = '8000'
 
+#status messages
 msg_request_failed = "Request to " + str(target_host) + " failed"
 msg_start_migrate = "Starting Migration to Cloudlet " + str(target_host) + "...\n\n"
 msg_migrated = "VM Migrated Successfully!!!!"

@@ -1,19 +1,33 @@
 from flask import Flask
 from subprocess import Popen, PIPE
-from flask.ext.api import status
 import requests
 import time
 from flask import request
 import config
+import mysql_config
 
 app = Flask(__name__)
 app.debug = True
 
 @app.route('/')
 def hello_world():
-    # client_ip = request.environ['REMOTE_ADDR']
-    # print client_ip
     # rtt working is simulated
+    #code to update cloud to cloud rtt. run ever 120s.
+    
+    client_ip = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
+    cur.execute("select IPaddress from neighbour_cloudlets")
+    rows=cur.fetchall()
+
+    addrs = [row[0] for row in rows]
+    for ip in addrs:
+        set_ip = requests.get(getCustomURL(ip, data = client_ip))
+        print "rtt to " + ip + " " +set_ip + "\n\n"
+
+    cur.close()                                      
+    connection.close()
+
+    #--------------------------
+
     threshold = 50
     print "threshold rtt: "+ str(threshold)
     rtt1 = 10
@@ -37,12 +51,27 @@ def hello_world():
     return 'Hello, world!\n'
 
 @app.route('/request')
-def request():
-    # client_ip = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
-    # msg_request_recieved = "Request from " + client_ip +" recieved"
-    # print msg_request_recieved
-    # return msg_request_recieved
-    return "request recieved"
+def req():
+    client_ip = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
+    msg_request_recieved = "Request from " + client_ip +" recieved"
+    print msg_request_recieved
+    return msg_request_recieved
+    # return request.headers['X-Real-IP']
+
+@app.route('/setIP')
+def setIP():
+    print "mobile ip: " + str(request.data)
+    dir = []
+    dir.append(request.data)
+    mp = MultiPing(dir)
+    mp.send()
+    responses, no_responses = mp.receive(0.01)
+    addr, rtt = responses.items()
+    return rtt
+
+def getCustomURL(IPaddress):
+    return 'http://' + IPaddress + ':5000/set_ip'
+
 
 @app.route('/start')
 def start():
@@ -93,11 +122,11 @@ def initVM():
     setUniversalTime()
 
 def check():
-  r = requests.get(getURL('request'))
-  if r.status_code == 200:
-    return True
-  else:
-    return False
+    r = requests.get(getURL('request'))
+    if r.status_code == 200:
+        return True
+    else:
+        return False
 
 def getURL(route):
     return 'http://' + target_host + ':5000/' + route
